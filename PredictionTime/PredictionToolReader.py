@@ -9,17 +9,17 @@ check = 0
 def getSequence(tool, modSequence):
     sequence=" "
     
-    if tool=="BioLCCC":
+    if tool == "BioLCCC":
         sequence = modSequence.split("-")[1]
         
-    if tool=="SSRCalc":
+    elif tool == "SSRCalc":
         sequence = modSequence.split("\s+")[0]
                                   
-    if tool=="Elude":
+    elif tool == "Elude":
         sequence = modSequence.split(".")[1]
-          
-    if tool=="orig":
-        sequence = modSequence.split(".")[1]
+      
+    else:
+        sequence = modSequence
    
     return sequence
 
@@ -27,6 +27,9 @@ def getSequence(tool, modSequence):
 def removeHeader(tool, content):
     if tool == "Elude":
         content = content[3:]
+        
+    if tool == "Reference":
+        content = content[1:]
 
     return content
     
@@ -82,7 +85,7 @@ def createMatrix(path):
                     # split content (sequences, rt, ...) of file; space, tab delimitted; data=list/array
                     for fileLine in content:
                         modFileLine = fileLine.strip()
-                        data = re.split('\s+', modFileLine) #bei SSRCalc output formatieren
+                        data = re.split('\s+', modFileLine)
                         
                         modSequence = data[0]
                         rt = data[1]
@@ -140,7 +143,7 @@ def modifyRetentionTimes(matrix):
     return matrix
 
 
-#write matrix in file format tab delimitted      
+#write matrix in file format tab delimited      
 def writeMatrix(matrix, out):
     #create file
     matFileOut = open(out, 'w')
