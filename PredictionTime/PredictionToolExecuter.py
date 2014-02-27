@@ -34,16 +34,13 @@ def executeElude(tool):
     p = subprocess.Popen([cmd], stderr=subprocess.PIPE, shell=True)
     out, err = p.communicate()
     ## TODO: wenn fehler, dann print
-    print cmd
-    print err
+#     print out, err
     
  
 def executeSSRcalc(tool):  
 
     paramToValue = Util.readConfigFile(Util.TOOL_CONFIG, "SSRCalc")
     general = Util.readConfigFile(Util.TOOL_CONFIG, "General")    
-    test_seq_file = open(general["testdirectory"]+paramToValue["iofile"], 'r')  
-
     #TODO: test train file; was wenn test=train bzw train !=test... ergibt fehler, wenn INPUTFILE nicht da, dabei sollte der das doch erstellen
     
     test_seq_file = general["testdirectory"]+paramToValue["iofile"]

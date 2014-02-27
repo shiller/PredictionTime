@@ -39,21 +39,66 @@ def getModSequences(tool, sequence, modToMod):
     return modSequence
 
 
+
 # write toolinput out of config file of ptm
 def writeToolInput(matrix, out, tool):
     pathToConfig = Util.PTM_CONFIG
     
     # read config, tool
     modToMod = Util.readConfigFile(pathToConfig, tool)
+    
+    toolInputRefFile = open(Util.PATH_TO_TMP+tool+"_test_reference.txt", 'w')
+    # ignore header(=matrix[0])
+    for row in matrix:
+        sequence = row[0]
+        modSequence = getModSequences(tool, sequence, modToMod)
+        toolInputRefFile.write(modSequence + "\t" + sequence + "\n")  
+
+    toolInputRefFile.close() 
+    
         
     toolInputFile = open(out+tool+".txt", 'w')
     # ignore header(=matrix[0])
-    for row in matrix[1:]:
+    for row in matrix:
         sequence = row[0]
         modSequence = getModSequences(tool, sequence, modToMod)
-        toolInputFile.write(modSequence+"\n")  
+        toolInputFile.write(modSequence+ "\n")  
 
-    toolInputFile.close()    
+    toolInputFile.close()   
+    
+    
+def writeTrainInput(matrix, out, tool):
+    pathToConfig = Util.PTM_CONFIG
+    
+    # read config, tool
+    modToMod = Util.readConfigFile(pathToConfig, tool)
+        
+    toolTrainRefFile = open(out+tool+"_train_reference.txt", 'w')
+    # ignore header(=matrix[0])
+    #write train_ref_file for checking the RTs
+    for row in matrix:
+        sequence = row[0]
+        rt_given = row[1]
+        modSequence = getModSequences(tool, sequence, modToMod)
+        toolTrainRefFile.write(modSequence + "\t" + sequence + "\t" + rt_given + "\n") 
+
+    toolTrainRefFile.close() 
+    
+    toolInputFile = open(Util.PATH_TO_TRAIN+tool+".txt", 'w')
+    # ignore header(=matrix[0])
+    #write trainToolinputfile
+    for row in matrix:
+        sequence = row[0]
+        rt_given = row[1]
+        modSequence = getModSequences(tool, sequence, modToMod)
+        if tool != "BioLCCC":
+            toolInputFile.write(modSequence + "\t" + rt_given + "\n") 
+        else:
+            toolInputFile.write(modSequence + "\n") 
+
+    toolInputFile.close() 
+    
+      
 
 # read reference file and create matrix
 def readReference(path):
@@ -69,7 +114,6 @@ def readReference(path):
                 matrix.append(data)
 #             
 #     # else: lese alles im verzeichnis ein
-#     print "hallo"
     elif os.path.isdir(path):
         dirContent = os.listdir(path)
         for fName in dirContent:
@@ -87,22 +131,17 @@ def readReference(path):
     return matrix
 
 
-# def randomGenerator(n, 30):
-#     
-#     counts = len(output)
-#     
-    
-
 def createSampleFile(PATH_TO_REFERENCE):
 
     paramToValue = Util.readConfigFile(Util.TOOL_CONFIG, "General")
-    path = PATH_TO_REFERENCE
+    path = Util.PATH_TO_TRAIN_REF
     
     
-    #read train file
+    #read train file S4
     trainmat = readReference(path)
     #create dict out of reffile
-    output = dict([(seq[0], seq[1]) for seq in trainmat])
+    #trainmat[1:] ignore header
+    output = dict([(seq[0], seq[1]) for seq in trainmat[1:]])
     output_test = output.copy()
 
     # chose x-size peptides for testfile
@@ -110,19 +149,16 @@ def createSampleFile(PATH_TO_REFERENCE):
     # createMatrix out of REFERENCE_TXT and add row with test also in train 0/1 or not
     for seq in random_train.keys():
         output_test.pop(seq)
-    
-    print output_test
-
-     
+         
     #TODO: fix static path     
     #write file train
-    randTrain = open("/home/shiller/PredictionTools/train_tmp/train_tmp.txt", 'w')
+    randTrain = open(Util.PATH_TRAIN_TMP+"train_tmp.txt", 'w')
     for key in random_train.keys():
-        randTrain.write(str(key) + "\t" + str(random_train[key]) + "\n");
+        randTrain.write(str(key) + "\t" + str(random_train[key]) + "\n")
      
     #write file test 
-    outpTest =  open("/home/shiller/PredictionTools/test_ref/test.txt", 'w')
+    outpTest =  open(Util.PATH_TO_TEST_REF+"test.txt", 'w')
     for key in output_test.keys():
-        outpTest.write(str(key) + "\t" + str(output_test[key]) + "\n");
+        outpTest.write(str(key) + "\t" + str(output_test[key]) + "\n")
     
-    #write file in tooloutput seq 0 oder seq 1 in train/testfile
+
