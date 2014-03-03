@@ -23,7 +23,8 @@ trainMatrix = PredictionToolReader.modifyRetentionTimes(trainMatrix)
 
 tools = ["Elude", "SSRCalc", "BioLCCC"]
 for tool in tools:
-    PredictionToolWriter.writeTrainInput(trainMatrix, Util.PATH_TO_TMP, tool) #neue spalte einfuegen mit ID als modifi.Seq mit RT und toolinputseq zeigt auf modifi.Seq
+    PredictionToolWriter.writeTrainInput(trainMatrix, Util.PATH_TO_TMP, tool) #neue spalte einfuegen mit ID als sseq mit RT (toolinputseq zeigt auf modifi.Seq)
+    #problem: ssrcalc nur unmodifizierte seq, rest mit -1
     
  # create toolinput for test; HEADER!
 testMatrix = PredictionToolWriter.readReference(Util.PATH_TO_TEST_REF)
