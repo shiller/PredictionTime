@@ -1,10 +1,10 @@
 import random
 import re
 import os
-import csv
+
 
 import Util
-import PredictionToolReader
+
 # import ConfigParser
 
 
@@ -141,12 +141,12 @@ def createSampleFile(PATH_TO_REFERENCE):
     trainmat = readReference(path)
     #create dict out of reffile
     #trainmat[1:] ignore header
+    #change here the RT of the files
     output = dict([(seq[0], seq[1]) for seq in trainmat[1:]])
     output_test = output.copy()
 
     # chose x-size peptides for testfile
-    random_train = dict(random.sample(output.items(), int(paramToValue["trainsize"]))) 
-    # createMatrix out of REFERENCE_TXT and add row with test also in train 0/1 or not
+    random_train = dict(random.sample(output.items(), int(paramToValue["trainSize"]))) 
     for seq in random_train.keys():
         output_test.pop(seq)
          
@@ -160,5 +160,9 @@ def createSampleFile(PATH_TO_REFERENCE):
     outpTest =  open(Util.PATH_TO_TEST_REF+"test.txt", 'w')
     for key in output_test.keys():
         outpTest.write(str(key) + "\t" + str(output_test[key]) + "\n")
+    
+
+    
+    
     
 

@@ -25,6 +25,10 @@ def readConfigFile(pathToConfig, tool):
     valueToKey = {}
     
     parser = ConfigParser.ConfigParser()
+    
+    # make case sensitive for [key]-call
+    parser.optionxform = str
+
     parser.read(pathToConfig)
     
     for key in parser.options(tool):
