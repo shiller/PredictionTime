@@ -34,7 +34,7 @@ def executeElude(tool):
     p = subprocess.Popen([cmd], stderr=subprocess.PIPE, shell=True)
     out, err = p.communicate()
     ## TODO: wenn fehler, dann print
-    print out, err
+#     print out, err
     
 #     takes output and connect with input rt
     output_RT_fh = open(Util.TOOLS_OUTPUT+"Elude.txt", 'r')
@@ -134,7 +134,7 @@ def executeBioLCCC(tool):
     chemBasis = chem_basis_map["%(chembasis)s" %paramToValue]
     
     
-    
+    # calculate RT and write tmp_output
     with open(general["testDirectory"]+paramToValue["ioFile"], 'r') as output:
         content = output.readlines()     
         for fileLine in content:
@@ -143,7 +143,7 @@ def executeBioLCCC(tool):
             fobjOut.write(sequence + "\t" + str(retentionTime) + "\n")
     fobjOut.close()
             
-#             #     take output and connect with input rt
+    # take output and connect with input rt
     output_RT_fh = open(Util.TOOLS_OUTPUT+"BioLCCC.txt", 'r')
     content = output_RT_fh.readlines()
     output_RT = content

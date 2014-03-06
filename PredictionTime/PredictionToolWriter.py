@@ -142,7 +142,7 @@ def createSampleFile(PATH_TO_REFERENCE):
     #create dict out of reffile
     #trainmat[1:] ignore header
     #change here the RT of the files
-    output = dict([(seq[0], seq[1]) for seq in trainmat[1:]])
+    output = dict([(seq[0], seq[2]) for seq in trainmat[1:]])
     output_test = output.copy()
 
     # chose x-size peptides for testfile
