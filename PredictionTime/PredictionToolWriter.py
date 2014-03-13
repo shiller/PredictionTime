@@ -2,7 +2,6 @@ import random
 import re
 import os
 
-
 import Util
 
 # import ConfigParser
@@ -135,22 +134,27 @@ def createSampleFile(PATH_TO_REFERENCE):
 
     paramToValue = Util.readConfigFile(Util.TOOL_CONFIG, "General")
     path = Util.PATH_TO_TRAIN_REF
-    
-    
-    #read train file S4
+        
+    #read train file S4[1], S5[2]
     trainmat = readReference(path)
     #create dict out of reffile
     #trainmat[1:] ignore header
     #change here the RT of the files
-    output = dict([(seq[0], seq[2]) for seq in trainmat[1:]])
+    output = dict([(seq[0], seq[1]) for seq in trainmat[1:]])
+   
     output_test = output.copy()
-
+    # calculate trainSize percent (x%)
+    trainSize = float(paramToValue["trainSize"])
+    if trainSize < 1.0:
+#         print len(output)
+        trainSize = float(trainSize)*float(len(output))
+        print len(output)
     # chose x-size peptides for testfile
-    random_train = dict(random.sample(output.items(), int(paramToValue["trainSize"]))) 
+    random_train = dict(random.sample(output.items(), int(trainSize))) 
+#     random_train = dict(random.sample(output.items(), (int(paramToValue["trainSize"])))) #fix count
     for seq in random_train.keys():
         output_test.pop(seq)
          
-    #TODO: fix static path     
     #write file train
     randTrain = open(Util.PATH_TRAIN_TMP+"train_tmp.txt", 'w')
     for key in random_train.keys():
@@ -162,7 +166,6 @@ def createSampleFile(PATH_TO_REFERENCE):
         outpTest.write(str(key) + "\t" + str(output_test[key]) + "\n")
     
 
-    
     
     
 

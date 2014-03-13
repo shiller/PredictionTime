@@ -40,6 +40,7 @@ PATH_TRAIN_TMP = "%(PATH_TRAIN_TMP)s" % paramToValue
 
 
 
+
 # clear method to empty directories and clean up
 def cleanUp():
     #if dir is not empty delete files

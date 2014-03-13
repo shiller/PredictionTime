@@ -3,6 +3,7 @@
 import os
 import subprocess 
 import re
+import ast
 
 from pyteomics import biolccc
 
@@ -30,7 +31,7 @@ def executeElude(tool):
     general = Util.readConfigFile(Util.TOOL_CONFIG, "General")
     
     cmd = "%(cmd)s" % Util.readConfigFile(Util.TOOL_CONFIG, tool)
-    cmd = (cmd + " -t " + general["trainDirectory"] + paramToValue["trainFile"] + " -e " + general["testDirectory"] + paramToValue["ioFile"] + " -o " + general["outputDirectory"] + paramToValue["ioFile"] + " " + paramToValue["verbose"])
+    cmd = (cmd + " -t " + general["trainDirectory"] + paramToValue["trainFile"] + " -e " + general["testDirectory"] + paramToValue["ioFile"] + " -o " + general["outputDirectory"] + paramToValue["ioFile"] + " -p " + paramToValue["verbose"])
     p = subprocess.Popen([cmd], stderr=subprocess.PIPE, shell=True)
     out, err = p.communicate()
     ## TODO: wenn fehler, dann print
@@ -124,6 +125,14 @@ def executeBioLCCC(tool):
     elif("flowRate"in paramToValue): 
         myChromoConditions['flowRate'] = float("%(flowRate)s" % paramToValue)
         
+    #myGradient settings
+    myGradient = biolccc.Gradient()
+    addPointList=()    
+    strList = paramToValue["myGradient.addPoint"]
+    addPointList = ast.literal_eval(strList)
+    for key in addPointList:
+        myGradient.addPoint(float(key[0]), float(key[1]))  
+    myChromoConditions.setGradient(myGradient)
     
     # calculateRT
     continueGradient=bool("%(continuegradient)s" % paramToValue)
@@ -133,7 +142,7 @@ def executeBioLCCC(tool):
     chem_basis_map["rpAcnTfaChain"] = biolccc.rpAcnTfaChain
     chemBasis = chem_basis_map["%(chembasis)s" %paramToValue]
     
-    
+#     print "BioLCCC starts calculating"
     # calculate RT and write tmp_output
     with open(general["testDirectory"]+paramToValue["ioFile"], 'r') as output:
         content = output.readlines()     
@@ -143,6 +152,7 @@ def executeBioLCCC(tool):
             fobjOut.write(sequence + "\t" + str(retentionTime) + "\n")
     fobjOut.close()
             
+#     print "BioLCCC finished calculating"
     # take output and connect with input rt
     output_RT_fh = open(Util.TOOLS_OUTPUT+"BioLCCC.txt", 'r')
     content = output_RT_fh.readlines()
@@ -181,6 +191,7 @@ def executeBioLCCC(tool):
         key = key.strip()
         biolc.write("\t".join((  str(seq), str(output_set[key])) )) #Ausgabe: value testRef_RT = modSeq mit phosphos, RT Zeit  
         biolc.write("\n")
+        
             
             
             
