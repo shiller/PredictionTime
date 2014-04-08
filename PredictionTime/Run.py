@@ -6,6 +6,8 @@ import PredictionToolReader
 import FileReader
 
 paramToValue = Util.readConfigFile(Util.TOOL_CONFIG, "General")
+nonphospho = bool(paramToValue["nonphospho"])
+
     
 Util.cleanUp()
 # create RMatrix with matches of modified phosphosites 
@@ -42,9 +44,10 @@ toolMatrix = PredictionToolReader.createMatrix(Util.TOOLS_OUTPUT)
 modToolMatrix = PredictionToolReader.modifyRetentionTimes(toolMatrix)
 #PredictionToolReader.writeMatrix(modToolMatrix, Util.REFERENCE_MATRIX)
 
-if paramToValue["nonphospho"]:
-    PredictionToolReader.writeMatrix(modToolMatrix, Util.PATH_TO_TOOLS +"nonphospho_" + paramToValue["trainFile"] + "_" + paramToValue["trainSize"] +  "_" + paramToValue["Score"] + "_" + paramToValue["DeltaScore"] + "_Ref.mat")
+
+if nonphospho:
+    PredictionToolReader.writeMatrix(modToolMatrix, Util.PATH_TO_TOOLS +"nonphospho_" + paramToValue["trainFile"] + "_" + paramToValue["trainSize"] +  "_" + paramToValue["Score"] + "_" + paramToValue["DeltaScore"] + ".mat")
 else:
-    PredictionToolReader.writeMatrix(modToolMatrix, Util.PATH_TO_TOOLS + paramToValue["trainFile"] + "_" + paramToValue["trainSize"] +  "_" + paramToValue["Score"] + "_" + paramToValue["DeltaScore"] + "_Ref.mat")
+    PredictionToolReader.writeMatrix(modToolMatrix, Util.PATH_TO_TOOLS + paramToValue["trainFile"] + "_" + paramToValue["trainSize"] +  "_" + paramToValue["Score"] + "_" + paramToValue["DeltaScore"] + ".mat")
     
 
