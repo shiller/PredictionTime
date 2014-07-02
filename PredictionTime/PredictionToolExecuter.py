@@ -8,7 +8,7 @@ import ast
 from pyteomics import biolccc
 
 import Util
-import SSRCalcTest
+import SSRCalc
 from lxml.html.builder import PARAM
 
 def factory(tool):
@@ -92,7 +92,7 @@ def executeSSRcalc(tool):
     ionpAgent = "%(ion_pairing_agent)s" % paramToValue
     poreS = float("%(pore_size)s" % paramToValue)
     pH = float("%(ph)s" % paramToValue)
-    SSRCalcTest.calculate_RT(test_seq, ionpAgent, poreS, pH)
+    SSRCalc.calculate_RT(test_seq, ionpAgent, poreS, pH)
     
 ##wenn fehler, dann print fehler
 
